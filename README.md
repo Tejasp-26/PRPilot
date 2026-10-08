@@ -1,6 +1,6 @@
 # PRPilot — Multi-Agent GitHub PR Reviewer
 
-[![CI](https://github.com/YOUR-USERNAME/PRPilot/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR-USERNAME/PRPilot/actions/workflows/ci.yml)
+[![CI](https://github.com/Tejasp-26/PRPilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Tejasp-26/PRPilot/actions/workflows/ci.yml)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 
 <!-- Demo: record a 30–60s run against a real PR, save it as docs/demo.gif, then uncomment:
