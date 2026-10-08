@@ -1,0 +1,7 @@
+description = "New function makes one HTTP request per customer inside a loop (N+1 calls)."
+
+[[bugs]]
+file = "app/orders.py"
+line = 15
+category = "performance"
+note = "requests.get inside a for loop over customer_ids"

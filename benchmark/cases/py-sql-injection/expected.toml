@@ -1,0 +1,7 @@
+description = "New search endpoint builds a SQL query with an f-string from user input."
+
+[[bugs]]
+file = "app/db.py"
+line = 16
+category = "security"
+note = "f-string interpolates `name` into SQL (SQL injection)"

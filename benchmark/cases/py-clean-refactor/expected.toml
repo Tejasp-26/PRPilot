@@ -1,0 +1,1 @@
+description = "Correct refactor of slugify to regexes, with broader tests. No bugs."

@@ -87,7 +87,7 @@ cp .env.example .env
 | `GITHUB_TOKEN` | Read the PR and post the review. Fine-grained token with *Pull requests: read & write* and *Contents: read*. Leave empty for a **dry run** (review logged, not posted). |
 | `LLM_PROVIDER` | `groq` (default) or `gemini` |
 | `GROQ_API_KEY` / `GOOGLE_API_KEY` | Key for the chosen provider |
-| `LLM_MODEL` | Optional model override (defaults: `llama-3.3-70b-versatile`, `gemini-2.5-flash`) |
+| `LLM_MODEL` | Optional model override (defaults: `openai/gpt-oss-120b`, `gemini-2.5-flash`) |
 | `PRPILOT_TRUST_REPO_CODE` | `true` to run ESLint and go vet/staticcheck. **These execute code from the reviewed repository** (`eslint.config.js`, Go builds) — enable only for repositories you trust. Default `false`: those files get an LLM style review. Ruff and Semgrep only read files and always run. |
 
 ---
@@ -130,6 +130,19 @@ streamlit run app_streamlit.py
 
 ---
 
+## Benchmark
+
+`benchmark/` measures review quality on PRs with a known answer key. Each case in `benchmark/cases/` holds the repo `before/` and `after/` the PR plus an `expected.toml` listing the real bugs; clean cases (no bugs) measure false alarms. Only GitHub fetching and posting are replaced; every agent, tool and LLM call runs for real.
+
+```bash
+python -m benchmark.run                          # all cases
+python -m benchmark.run --cases py-sql-injection --output benchmark/results/run.json
+```
+
+It reports bugs caught (recall), how many comments point at real bugs (precision), false alarms on clean PRs, and time and tokens per PR. A finding counts when it has the same file and category as a known bug, within ±3 lines. Style findings are reported but not scored.
+
+---
+
 ## Project layout
 
 ```
@@ -145,6 +158,7 @@ prpilot/
   tools/                 workspace checkout, diff parser, AST utils, tool runners,
                          GitHub client, LLM fallback reviews
 app_streamlit.py         Streamlit UI
+benchmark/               review-quality benchmark (cases, runner, scoring)
 tests/                   pytest suite (offline; GitHub, tools and LLM are mocked)
 ```
 

@@ -1,0 +1,7 @@
+description = "New /ping route passes a query parameter into a shell command."
+
+[[bugs]]
+file = "src/server.js"
+line = 12
+category = "security"
+note = "req.query.host interpolated into child_process.exec (command injection)"

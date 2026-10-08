@@ -1,0 +1,7 @@
+description = "New pricing function with validation logic and no tests."
+
+[[bugs]]
+file = "app/pricing.py"
+line = 5
+category = "test_coverage"
+note = "apply_discount (incl. the ValueError branch) is never tested"

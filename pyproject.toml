@@ -63,11 +63,14 @@ packages = ["prpilot"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 120
 target-version = "py311"
+# Benchmark cases are sample PRs that contain bugs on purpose.
+extend-exclude = ["benchmark/cases"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B"]

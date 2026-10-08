@@ -64,3 +64,4 @@ scratch/
 
 # ── PRPilot outputs ──────────────────────────────────────────
 review*.json
+benchmark/results/
