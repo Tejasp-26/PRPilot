@@ -19,7 +19,6 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-
 # ──────────────────────────────────────────────
 # LanguageProfile model
 # ──────────────────────────────────────────────

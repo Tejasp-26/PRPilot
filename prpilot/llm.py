@@ -92,7 +92,7 @@ def _make_groq_llm(model: str):
 
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
-        raise EnvironmentError(
+        raise OSError(
             "GROQ_API_KEY is not set. Copy .env.example to .env and add your key."
         )
 
@@ -116,7 +116,7 @@ def _make_gemini_llm(model: str):
 
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise EnvironmentError(
+        raise OSError(
             "GOOGLE_API_KEY is not set. Add it to your .env file."
         )
 

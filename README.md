@@ -1,5 +1,12 @@
 # PRPilot — Multi-Agent GitHub PR Reviewer
 
+[![CI](https://github.com/YOUR-USERNAME/PRPilot/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR-USERNAME/PRPilot/actions/workflows/ci.yml)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
+
+<!-- Demo: record a 30–60s run against a real PR, save it as docs/demo.gif, then uncomment:
+![PRPilot reviewing a pull request](docs/demo.gif)
+-->
+
 PRPilot reviews GitHub Pull Requests with a team of specialised agents, orchestrated by **LangGraph** and powered by **LangChain**. It downloads the PR's code, runs real static analysis tools where they exist (Semgrep, Ruff, ESLint, go vet / staticcheck, tree-sitter), uses an LLM to explain and fill the gaps, ranks everything by severity, and posts a single review with inline comments to the PR.
 
 ---
@@ -45,6 +52,16 @@ PRPilot reviews GitHub Pull Requests with a team of specialised agents, orchestr
 | Style | Ruff (Python); ESLint / go vet + staticcheck (trusted repos only) | LLM review of the diff |
 | Test Coverage | tree-sitter finds functions the PR touches; checks references in the repo's test files | LLM review of the diff |
 
+## Design decisions
+
+**Real tools first, LLM second.** Static analysers are deterministic and precise about *where* a problem is, but noisy and terse. LLMs explain well but can invent issues and line numbers. So each agent runs the tool first and uses the LLM to explain matches, propose a fix and rate confidence; the LLM reviews the diff on its own only when no tool covers that language or check. Every finding records which path produced it (`used_fallback`), and LLM-only findings are capped at medium confidence and ranked below tool findings, so a reviewer can tell evidence from opinion.
+
+**The escalation loop stops after two re-runs.** A critical security finding with low confidence is the one case where getting it wrong is expensive either way: a false alarm erodes trust, a missed vulnerability ships. So it triggers a re-scan with a stricter Semgrep ruleset (`auto` + `p/security-audit`). It is capped at `MAX_ESCALATION_COUNT = 2` because a third pass with the same rules rarely changes the answer but always costs time and LLM tokens, and an uncapped loop is a liability in an automated pipeline. If the cap is hit, a warning is logged and the finding is still posted rather than silently dropped. Escalation is also skipped entirely when Semgrep can't run, since the re-run would just repeat the same LLM review.
+
+**Reviews are never posted as "Approve" or "Request changes".** Every review is a neutral `COMMENT`. An automated reviewer can be wrong, and PR content is attacker-controlled input (a PR can contain text written to manipulate an LLM). Letting the bot approve would turn a prompt injection into a merged PR; letting it block would make its false positives stop real work. Merge decisions stay with humans, and PRPilot's job is to make that decision faster and better informed.
+
+**Repository code is never executed by default.** ESLint configs and Go builds can run arbitrary code from the reviewed repo, so those tools only run when `PRPILOT_TRUST_REPO_CODE=true`. Ruff and Semgrep only read files and always run. The downloaded workspace is extracted with path-traversal and symlink checks, and deleted after every run.
+
 ---
 
 ## Installation
@@ -89,6 +106,18 @@ Options:
 
 Exit codes: `0` review posted (or dry run), `1` invalid input, `2` review could not be posted.
 
+### Docker
+
+```bash
+docker build -t prpilot .
+docker run --rm --env-file .env prpilot --pr-url https://github.com/owner/repo/pull/42
+# Web UI on http://localhost:8501
+docker run --rm --env-file .env -p 8501:8501 --entrypoint streamlit prpilot \
+  run app_streamlit.py --server.address=0.0.0.0
+```
+
+The image includes Ruff and Semgrep. Node.js and Go are not included, so JS/TS and Go files get an LLM style review.
+
 ### Web UI
 
 ```bash
@@ -125,6 +154,7 @@ tests/                   pytest suite (offline; GitHub, tools and LLM are mocked
 
 ```bash
 python -m pytest
+ruff check .
 ```
 
 The suite runs offline: subprocesses, GitHub and the LLM are mocked, while tree-sitter parsing, diff parsing, tarball extraction and the full LangGraph routing run for real.

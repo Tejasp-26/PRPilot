@@ -17,15 +17,14 @@ import html
 
 import streamlit as st
 
+from prpilot.cli import parse_pr_url, run
+
 # Set page config
 st.set_page_config(
     page_title="PRPilot - GitHub PR Reviewer",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
-from prpilot.cli import parse_pr_url, run
-
 
 # ──────────────────────────────────────────────
 # CSS Injector for Clean, Professional Aesthetics
@@ -54,7 +53,7 @@ st.markdown(
         font-weight: 700;
         margin-bottom: 0.1rem;
     }
-    
+
     .title-sub {
         color: #6C757D;
         font-size: 1.1rem;
@@ -69,7 +68,7 @@ st.markdown(
         margin-bottom: 1.2rem;
         border-left: 4px solid;
     }
-    
+
     .card-critical {
         background-color: #1A1012;
         border-color: #DC3545;
@@ -122,7 +121,7 @@ st.markdown(
         letter-spacing: 0.05em;
         margin-right: 0.5rem;
     }
-    
+
     .badge-sec { background-color: rgba(220, 53, 69, 0.15); color: #E4606D; }
     .badge-perf { background-color: rgba(13, 110, 253, 0.15); color: #4DA3FF; }
     .badge-style { background-color: rgba(255, 193, 7, 0.15); color: #FFD54F; }
@@ -156,7 +155,7 @@ if st.button("Run Code Review", use_container_width=True, type="primary"):
         try:
             # Pre-validate URL
             owner, repo, pr_number = parse_pr_url(pr_url_input)
-            
+
             # Show progress
             with st.status("Analyzing diffs, linters, security configurations, and performance heuristics...", expanded=True) as status:
                 st.write("Fetching repository metadata and changed files...")
@@ -194,22 +193,22 @@ if st.button("Run Code Review", use_container_width=True, type="primary"):
             # Summary dashboard
             st.divider()
             st.markdown("## Review Dashboard")
-            
+
             col1, col2 = st.columns([2, 1])
-            
+
             with col1:
                 st.markdown("### Executive Summary")
                 st.markdown(final_state.get("review_summary", "N/A"))
-            
+
             with col2:
                 st.markdown("### Language Coverage & Tools")
                 coverage = final_state.get("language_coverage_summary", "No coverage information.")
                 st.info(coverage)
-            
+
             # Detailed Findings
             st.markdown("### Detailed Findings")
             all_findings = final_state.get("all_findings", [])
-            
+
             if not all_findings:
                 st.success("All checks passed. No issues found.")
             else:
@@ -263,7 +262,7 @@ if st.button("Run Code Review", use_container_width=True, type="primary"):
                         """,
                         unsafe_allow_html=True
                     )
-                    
+
         except ValueError as e:
             st.error(f"Invalid PR URL format: {e}")
         except Exception as e:

@@ -64,3 +64,12 @@ packages = ["prpilot"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+# Long lines are mostly LLM prompts and inline HTML; splitting them hurts readability.
+ignore = ["E501"]

@@ -11,7 +11,6 @@ from typing import Literal, TypedDict
 
 from pydantic import BaseModel, Field
 
-
 # ──────────────────────────────────────────────
 # Finding — one discrete review comment
 # ──────────────────────────────────────────────
