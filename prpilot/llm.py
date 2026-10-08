@@ -133,10 +133,3 @@ def truncate_for_llm(text: str, limit: int = LLM_MAX_FILE_CHARS) -> str:
     if len(text) <= limit:
         return text
     return text[:limit] + f"\n... [truncated {len(text) - limit} characters]"
-
-
-def reset_llm_cache() -> None:
-    """Clear the cached LLM instance (useful in tests to swap providers)."""
-    global _llm_instance
-    with _llm_lock:
-        _llm_instance = None
