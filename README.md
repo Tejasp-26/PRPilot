@@ -135,9 +135,18 @@ streamlit run app_streamlit.py
 `benchmark/` measures review quality on PRs with a known answer key. Each case in `benchmark/cases/` holds the repo `before/` and `after/` the PR plus an `expected.toml` listing the real bugs; clean cases (no bugs) measure false alarms. Only GitHub fetching and posting are replaced; every agent, tool and LLM call runs for real.
 
 ```bash
-python -m benchmark.run                          # all cases
-python -m benchmark.run --cases py-sql-injection --output benchmark/results/run.json
+python -m benchmark.run                          # all cases, default setups
+python -m benchmark.run --setups full --cases py-sql-injection --output benchmark/results/run.json
 ```
+
+Every case runs through each setup with the same model:
+
+| Setup | What it is |
+|---|---|
+| `plain-llm` | The whole diff in one prompt: the "just ask a chat model" baseline |
+| `llm-agents` | PRPilot's agents with every static tool and the AST disabled |
+| `full` | PRPilot as shipped |
+| `no-escalation` | PRPilot with the escalation loop off (opt-in) |
 
 It reports bugs caught (recall), how many comments point at real bugs (precision), false alarms on clean PRs, and time and tokens per PR. A finding counts when it has the same file and category as a known bug, within ±3 lines. Style findings are reported but not scored.
 
