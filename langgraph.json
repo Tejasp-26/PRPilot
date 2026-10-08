@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "prpilot": "./prpilot/graph.py:app"
+  },
+  "env": ".env"
+}

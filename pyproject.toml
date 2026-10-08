@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "prpilot"
+dynamic = ["version"]
+description = "PRPilot — multi-agent GitHub Pull Request reviewer built on LangGraph + LangChain"
+requires-python = ">=3.11"
+readme = "README.md"
+license = { text = "MIT" }
+
+dependencies = [
+    # Orchestration & LLM
+    "langgraph>=0.2",
+    "langchain>=0.3",
+    "langchain-groq>=0.1",
+    "langchain-core>=0.3",
+
+    # Structured output
+    "pydantic>=2.0",
+
+    # GitHub access
+    "PyGithub>=2.0",
+    "requests>=2.31",
+
+    # Diff parsing
+    "unidiff>=0.7",
+
+    # AST parsing (per-grammar packages — more stable than the tree-sitter-languages bundle)
+    "tree-sitter>=0.23",
+    "tree-sitter-python>=0.23",
+    "tree-sitter-javascript>=0.23",
+    "tree-sitter-typescript>=0.23",
+    "tree-sitter-go>=0.23",
+
+    # Config
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+# Static analysis CLIs installable from PyPI (ESLint/go vet need Node/Go separately)
+tools = [
+    "ruff>=0.5",
+    "semgrep>=1.50",
+]
+gemini = ["langchain-google-genai>=2.0"]
+ui = ["streamlit>=1.35"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-mock>=3.12",
+]
+
+[project.scripts]
+prpilot = "prpilot.cli:cli"
+
+[tool.hatch.version]
+path = "prpilot/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["prpilot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

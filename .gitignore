@@ -1,0 +1,66 @@
+# ── Secrets (NEVER commit these) ────────────────────────────
+.env
+*.env.local
+!.env.example
+
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+.eggs/
+
+# ── Virtual environments ─────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# ── Testing ──────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.coveragerc
+
+# ── Linter / tool caches ─────────────────────────────────────
+.ruff_cache/
+.mypy_cache/
+.semgrep/
+semgrep_output/
+
+# ── IDE ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Temp / scratch ───────────────────────────────────────────
+tmp/
+scratch/
+*.tmp
+
+# ── LangGraph dev server state ───────────────────────────────
+.langgraph_api/
+
+# ── PRPilot outputs ──────────────────────────────────────────
+review*.json
